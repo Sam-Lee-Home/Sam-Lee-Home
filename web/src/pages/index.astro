@@ -23,7 +23,7 @@ const hero = homeCollection[0]?.data || { headline: '', heroDescription: '' };
   <SplitHeroSection 
     headline={hero.headline}
     primaryCTA={{ label: "View Our Work", href: "#" }}
-    secondaryCTA={{ label: "Contact us", href: "/contact" }}
+    secondaryCTA={{ label: "Contact us", href: `${import.meta.env.BASE_URL}/contact` }}
   >
     <p slot="description" class="inline">
       {hero.heroDescription.split('[logo]').map((text, index, array) => (

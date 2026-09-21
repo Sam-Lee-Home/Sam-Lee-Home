@@ -1,0 +1,91 @@
+---
+import { authService } from '../../services/auth';
+---
+
+<div class="max-w-xl w-full mx-auto mt-10 p-8 md:p-12 bg-gray-50 rounded-3xl border border-brand-primary shadow-sm">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Create Account</h2>
+  
+  <form id="signup-form" class="flex flex-col gap-6 w-full">
+    <div class="flex flex-col gap-2 w-full">
+      <label for="username" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Username</label>
+      <input 
+        type="text" 
+        id="username" 
+        name="username" 
+        required 
+        placeholder="Choose a username"
+        class="w-full font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2 w-full">
+      <label for="email" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Email Address</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        required 
+        placeholder="email@example.com"
+        class="w-full font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2 w-full">
+      <label for="password" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Password</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        required 
+        placeholder="Create a strong password"
+        class="w-full font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+      />
+    </div>
+
+    <div id="error-message" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200">
+    </div>
+
+    <button 
+      type="submit"
+      class="font-sans font-bold px-8 py-4 rounded-full bg-brand-primary text-white hover:bg-yellow-700 transition-colors shadow-md text-center"
+    >
+      Create Account
+    </button>
+  </form>
+
+  <div class="mt-4 text-center text-sm text-gray-600">
+    Already have an account? 
+    <a href="/login" class="ml-1 text-brand-primary hover:underline font-medium">Sign In</a>
+  </div>
+</div>
+
+<script>
+  import { authService } from '../../services/auth';
+
+  const form = document.getElementById('signup-form') as HTMLFormElement;
+  const errorDiv = document.getElementById('error-message') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    errorDiv.classList.add('hidden');
+
+    try {
+      const result = await authService.signUp(username, email, password);
+      if (result.success) {
+        window.location.href = '/confirm';
+      } else {
+        errorDiv.textContent = result.error || 'An unexpected error occurred';
+        errorDiv.classList.remove('hidden');
+      }
+    } catch (err) {
+      errorDiv.textContent = 'Connection error. Please try again.';
+      errorDiv.classList.remove('hidden');
+    }
+  });
+</script>

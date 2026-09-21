@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MinimalHeader from '../components/MinimalHeader.astro';
+import StructuredDarkFooter from '../components/StructuredDarkFooter.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SplitHeroSection from '../components/SplitHeroSection.astro';
+
+import { getCollection } from 'astro:content';
+
+const newsCollection = await getCollection('news');
+const hero = newsCollection[0]?.data || { headline: '', sources: [] };
+
+const breadcrumbs = [
+  { label: 'News', href: '/news' },
+];
+---
+
+<Layout>
+  <div class="news-page">
+    <MinimalHeader />
+
+    <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+      <Breadcrumbs items={breadcrumbs} centered noTopPadding />
+    </div>
+
+    <SplitHeroSection 
+      headline={hero.headline}
+    >
+      <div slot="description" class="inline [&_a]:text-brand-primary [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ul]:list-inside [&_li]:mb-1">
+        <ul>
+          {hero.sources.map((source) => (
+            <li class="mb-1">
+              <a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </SplitHeroSection>
+
+    <main class="px-4 pb-8 pt-0 md:px-8 lg:px-16 max-w-7xl mx-auto">
+      <!-- Content from philosophy page mirrored if needed, but for now just the hero as per requirements -->
+    </main>
+
+    <StructuredDarkFooter />
+  </div>
+</Layout>
+
+<style>
+  .news-page :global(a) {
+    text-decoration: none !important;
+  }
+  .news-page :global(a:hover) {
+    text-decoration: underline !important;
+  }
+</style>

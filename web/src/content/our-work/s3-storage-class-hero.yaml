@@ -1,0 +1,2 @@
+headline: Optimize cost with the correct S3 storage class
+description: Keeping all data in S3 Standard is an expensive mistake. Matching your files to the most cost-effective storage tier can shrink your data storage cost.

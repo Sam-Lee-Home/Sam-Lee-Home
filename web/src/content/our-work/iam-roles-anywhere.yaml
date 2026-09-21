@@ -1,0 +1,70 @@
+- category: "AWS Infrastructure"
+  title: "Architecture"
+  image: "./iam_roles_anywhere.png"
+  order: 0
+
+- category: "AWS Infrastructure"
+  title: "Overview"
+  description: |
+    <a href="https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html" target="_blank">IAM roles anywhere</a> removes the operational overhead of rotating static keys, eliminates the risk of hardcoded credential leakage, and centralizes access management for all workloads under standard AWS IAM policies.
+    <ul>
+      <li><strong>Trust Establishment</strong>: A Trust Anchor integrates AWS with existing Public Key Infrastructure (PKI).</li>
+      <li><strong>Identity Mapping</strong>: IAM Profiles map workload X.509 certificates to specific, least-privilege IAM roles.</li>
+      <li><strong>Dynamic Authentication</strong>: The AWS credential helper allows external workloads to present their certificates and exchange them for temporary AWS credentials.</li>
+      <li><strong>Contextual Security</strong>: IAM condition keys enforce access controls based on network origin or specific certificate attributes.</li>
+    </ul>
+  order: 1
+
+- category: "AWS Infrastructure"
+  title: "Usage recipe:"
+  description: |
+    <p><strong>Install the AWS Signing Helper</strong></p>
+    AWS provides a credential helper binary that exchanges your certificate for temporary AWS credentials. Download and install from this URL: <a href="https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html" target="_blank"> AWS Credential Helper Documentation</a>
+    <br /><br />
+    <strong>Configure it</strong> as a credential process in <code class="bg-gray-100 px-1 rounded">%USERPROFILE%\.aws\config</code>:
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    [profile onprem-ingest]
+    credential_process = <span style="background-color: yellow;">C:\Users\xxxx\IAManywhere\aws_signing_helper</span> credential-process --certificate "<span style="background-color: yellow;">C:\Users\xxxx\IAManywhere\server.pem</span>" --private-key "<span style="background-color: yellow;">C:\Users\xxxx\IAManywhere\server.key</span>" --trust-anchor-arn arn:aws:rolesanywhere:us-east-1:xxxxxxxxxxxx:trust-anchor/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx --profile-arn arn:aws:rolesanywhere:us-east-1:xxxxxxxxxxxx:profile/xxxxxxxxxxxx-73e4-4315-b811-xxxxxxxxxxxx --role-arn arn:aws:iam::xxxxxxxxxxxx:role/iam_anywhere_role region = us-east-1
+    </code></pre>
+    <br /><br />
+    <strong>Test it:</strong>
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    aws sts get-caller-identity --profile onprem-ingest
+    </code></pre>
+    <br /><br />
+    On the on-prem server, <strong>poll SQS</strong> for the notification:
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/xxxxxxxxxxxx/ingest-us-east-1-xxxxxxxxxxxx_NewObjects --max-number-of-messages 1 --profile onprem-ingest
+    </code></pre>
+    <br /><br />
+    You'll get a JSON response. The Body field contains the SNS envelope, and inside that is the S3 event. <strong>Parse</strong> out the S3 key and the receipt handle:
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    {
+        "Messages": [
+            {
+                "MessageId": "95e99635-2083-462c-8bec-6971625bd4c4",
+                "ReceiptHandle": "<span style="background-color: yellow;">AQEBicE7BlbBMaOFJhAPe+yFe2r2rsSZv9BladcvzcWhVz766qjarf4AttibeTzDVzhz0Jmd0vbI//OubhoYURj2Jelv7TjuVHDyBLl6cMmqGDL9f4wR3HzGDS1z2f6ZOCBVKJNfv+BV9DVqEkweabgf3iZOs+aWD8aQw6BRQ/vR6U5+v4bfR+4fatYQYYa+XTrkqU5oUYIOaY14LH0RWxec8ICWjtktEvkeTAwW0Ahu0h9tYNnkK4bl7mSue9/uErCnQ7pVJMmgK6UuANRq6PEwKRg+lUMFRafXxnmVPJOhRESbuVyFHQss9cPs50rPmuescVELlxI/CSK3M/Ry4xzvOYSU7L1BIbM6nOJ7YFBIp6rjW/60gfpiA3lRX5UGOXAfbUY0HvjmqRgAuBn6+2+RLYstVezOvkB1btcW/BE7/0Hu8yEbPzVbFU0b0yIc4tJ0</span>", 
+                "MD5OfBody": "f83a672c23c6a3a9c74c7ecaa30cda96",
+                "Body": "{\n  \"Type\" : \"Notification\",\n  \"MessageId\" : \"7fdd740a-28be-55ed-b858-171ffe9a721b\",\n  \"TopicArn\" : \"arn:aws:sns:us-east-1:xxxxxxxxxxxx:ingest-trust-us-east-1-xxxxxxxxxxxxx_NewObjects\",\n  \"Subject\" : \"Amazon S3 Notification\",\n  \"Message\" : \"{\\\"Records\\\":[{\\\"eventVersion\\\":\\\"2.5\\\",\\\"eventSource\\\":\\\"aws:s3\\\",\\\"awsRegion\\\":\\\"us-east-1\\\",\\\"eventTime\\\":\\\"2026-09-05T08:33:39.737Z\\\",\\\"eventName\\\":\\\"ObjectCreated:Put\\\",\\\"userIdentity\\\":{\\\"principalId\\\":\\\"AWS:AROAR3HUOIC5ND64P3254:xxxx.xxx@example.com\\\"},\\\"requestParameters\\\":{\\\"sourceIPAddress\\\":\\\"xxx.xx.xx.xxx\\\"},\\\"responseElements\\\":{\\\"x-amz-request-id\\\":\\\"6NFDCKD6R98G0QMS\\\",\\\"x-amz-id-2\\\":\\\"ZIsfSJkebz6+YJb7jCB1l2bs2n7oHWlcOUGAv1IG6of5/y/bch8/cNGX2IJgp3JPsevPzcFMWmq5ny0rTeduwMpHbDMB8lkk\\\"},\\\"s3\\\":{\\\"s3SchemaVersion\\\":\\\"1.0\\\",\\\"configurationId\\\":\\\"ingest-trust\\\",\\\"<span style='background-color: yellow;'>bucket</span>\":{\"<span style='background-color: yellow;'>name</span>\":\"<span style='background-color: yellow;'>ingest-trust-us-east-1-xxxxxxxxxxxx</span>\",\"ownerIdentity\":{\"principalId\":\"A32USPGYSHSPDD\"},\"arn\":\"arn:aws:s3:::ingest-trust-us-east-1-xxxxxxxxxxxx\"},\\\"<span style='background-color: yellow;'>object</span>\\\":{\\\"<span style='background-color: yellow;'>key</span>\\\":\\\"<span style='background-color: yellow;'>xxxx_xxxx/test-file.txt</span>\\\",\\\"size\\\":15,\\\"eTag\\\":\\\"b944bdfc0e126a51722bf7f90c2ef373\\\",\\\"sequencer\\\":\\\"006A9BD3E39AACC6BA\\\"}}}]}\",\n  \"Timestamp\" : \"2026-09-05T08:33:40.692Z\",\n  \"SignatureVersion\" : \"1\",\n  \"Signature\" : \"u1qxnzoq8g4wQSHUOVPa8PfycjB41/EvCehPSdoVj91T1NMidQfKrjl0BW0FSXW+7PuqtuYVK8sCW6GGDw3TIitEEas8LbJtxg4nR0Ak+GAVcx1Gvg0K+79LY5YKhsfPxySBYx9VSGVpIQkuYMlAE14t1qHT/c8Bt+hS+4c1dftv42p4kNM3XM7W3ZnEpkqAnzEBGQFGePkAkgBBgna5bI6gRDE0F0zzq1PwQFo+6CeC9AOa14MvkJEiQRuss0wGEEsbASVG+MqV3+Q64xMAlGn28SS4tofd4w8Zq48Hv0nEwOJj7fwr3AJit/5WcCJg2QaD9gFxilH690lhwi91mg==\",\n  \"SigningCertURL\" : \"https://sns.us-east-1.amazonaws.com/SimpleNotificationService-xxxxc4574facfe41babdb2d652f8ebef.pem\",\n  \"UnsubscribeURL\" : \"https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:xxxxxxxxxxxx:ingest-trust-us-east-1-xxxxxxxxxxxx_NewObjects:xxxxxxxx-53ad-4b4d-aa1c-xxxxxxxxxxxx\"\n}"
+            }
+        ]
+    }
+    </code></pre>
+    <br /><br />
+    <strong>Download</strong> the file from S3:
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    aws s3 cp <span style='background-color: yellow;'>s3://ingest-trust-us-east-1-xxxxxxxx/xxxx_xxxxx/test-file.txt</span>  ./downloaded-file.txt --profile onprem-ingest
+    
+    # examine the content
+    type downloaded-file.txt
+    </code></pre>
+    <br /><br />
+
+    <strong>Delete</strong> the SQS message (acknowledge processing):
+    <pre style="white-space: pre-wrap; word-break: break-all; overflow-wrap: anywhere; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"><code>
+    set "RECEIPT_HANDLE=<span style='background-color: yellow;'>AQEBicE7BlbBMaOFJhAPe+yFe2r2rsSZv9BladcvzcWhVz766qjarf4AttibeTzDVzhz0Jmd0vbI//OubhoYURj2Jelv7TjuVHDyBLl6cMmqGDL9f4wR3HzGDS1z2f6ZOCBVKJNfv+BV9DVqEkweabgf3iZOs+aWD8aQw6BRQ/vR6U5+v4bfR+4fatYQYYa+XTrkqU5oUYIOaY14LH0RWxec8ICWjtktEvkeTAwW0Ahu0h9tYNnkK4bl7mSue9/uErCnQ7pVJMmgK6UuANRq6PEwKRg+lUMFRafXxnmVPJOhRESbuVyFHQss9cPs50rPmuescVELlxI/CSK3M/Ry4xzvOYSU7L1BIbM6nOJ7YFBIp6rjW/60gfpiA3lRX5UGOXAfbUY0HvjmqRgAuBn6+2+RLYstVezOvkB1btcW/BE7/0Hu8yEbPzVbFU0b0yIc4tJ0</span>"
+
+    aws sqs delete-message --queue-url https://sqs.us-east-1.amazonaws.com/xxxxxxxxxxxx/ingest-us-east-1-xxxxxxxxxxxx_NewObjects --receipt-handle "%RECEIPT_HANDLE%" --profile onprem-ingest
+    </code></pre>
+  order: 2
+ 

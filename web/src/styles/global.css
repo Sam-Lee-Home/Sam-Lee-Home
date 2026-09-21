@@ -1,1 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #C29B40;
+  --color-brand-secondary: #FDF5E6;
+  --color-bg-main: #faf9f8;
+  
+  --color-card-coral: #ffb7b2;
+  --color-card-lemon: #fff9c4;
+  --color-card-lilac: #e1bee7;
+  --color-card-green: #c8e6c9;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono-thin: "Roboto Mono", monospace;
+}
+
+:root {
+  background-color: var(--color-bg-main);
+}

@@ -1,0 +1,43 @@
+---
+import { authService } from '../../services/auth';
+---
+
+<div id="user-menu" class="flex items-center gap-4 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-200">
+  <div class="text-xs text-gray-600 flex items-center gap-2">
+    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+    <span class="font-medium" id="user-name">Loading...</span>
+  </div>
+  
+  <button 
+    id="logout-btn"
+    class="px-3 py-1 text-xs font-bold text-white bg-brand-secondary hover:bg-brand-primary rounded-full transition-colors"
+  >
+    Logout
+  </button>
+</div>
+
+<script>
+  import { authService } from '../../services/auth';
+
+  const nameSpan = document.getElementById('user-name');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  async function initUserMenu() {
+    const user = await authService.getCurrentUser();
+    if (user) {
+      if (nameSpan) nameSpan.textContent = user.username;
+    } else {
+      // Only redirect if we are on a protected page (e.g., /dashboard)
+      if (window.location.pathname === '/dashboard') {
+        window.location.href = '/login';
+      }
+    }
+  }
+
+  logoutBtn?.addEventListener('click', async () => {
+    await authService.signOut();
+    window.location.href = '/login';
+  });
+
+  initUserMenu();
+</script>

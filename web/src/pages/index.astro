@@ -1,11 +1,52 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import MinimalHeader from '../components/MinimalHeader.astro';
+import BrandLogo from '../components/BrandLogo.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SplitHeroSection from '../components/SplitHeroSection.astro';
+import ColorfulCardGrid from '../components/ColorfulCardGrid.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import StructuredDarkFooter from '../components/StructuredDarkFooter.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
+const howWeWorkCollection = await getCollection('how-we-work');
+const howWeWork = howWeWorkCollection.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const homeCollection = await getCollection('home');
+const hero = homeCollection[0]?.data || { headline: '', heroDescription: '' };
 ---
 
 <Layout>
-	<Welcome />
+  <MinimalHeader />
+  
+  <SplitHeroSection 
+    headline={hero.headline}
+    primaryCTA={{ label: "View Our Work", href: "#" }}
+    secondaryCTA={{ label: "Contact us", href: "/contact" }}
+  >
+    <p slot="description" class="inline">
+      {hero.heroDescription.split('[logo]').map((text, index, array) => (
+        <Fragment>
+          <span set:html={text} />
+          {index < array.length - 1 && <BrandLogo />}
+        </Fragment>
+      ))}
+    </p>
+  </SplitHeroSection>
+
+  <ColorfulCardGrid headerText="How we work">
+    {howWeWork.map(item => (
+      <FeatureCard 
+        themeColor={item.data.themeColor} 
+        headerText={item.data.category}
+        title={item.data.title} 
+        description={item.body}
+      />
+    ))}
+  </ColorfulCardGrid>
+
+  <StructuredDarkFooter 
+    logoUrl="https://cdn-icons-png.flaticon.com/512/1048/1048954.png"
+  />
 </Layout>

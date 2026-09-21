@@ -1,0 +1,92 @@
+---
+interface CTA {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  headline: string;
+  descriptionHTML?: string;
+  primaryCTA?: CTA;
+  secondaryCTA?: CTA;
+}
+
+const { headline, descriptionHTML, primaryCTA, secondaryCTA } = Astro.props;
+---
+
+<section class="max-w-7xl mx-auto px-6 py-20 md:py-32">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
+    
+    <!-- Headline Area -->
+    <div class="text-left">
+      <h1 class="font-serif text-5xl md:text-6xl text-gray-900 leading-tight" set:html={headline}>
+      </h1>
+    </div>
+
+    <!-- Content & Action Area -->
+    <div class="flex flex-col gap-8">
+      <div class="font-sans text-lg md:text-xl text-gray-600 leading-relaxed">
+        {descriptionHTML && <Fragment set:html={descriptionHTML} />}
+        <slot name="description" />
+      </div>
+      
+       { (primaryCTA || secondaryCTA) && (
+          <div class="flex flex-wrap items-center gap-6">
+            {primaryCTA && (
+              <div class="relative">
+                <!-- Sparkle/Cursor Icon -->
+                <div class="absolute -top-4 -right-4 text-brand-primary animate-bounce">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1-1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                </div>
+                <a 
+                  href={primaryCTA.href} 
+                  id="primary-cta-btn"
+                  class="inline-block font-sans font-bold px-8 py-4 rounded-full bg-brand-primary text-white hover:bg-yellow-700 transition-colors shadow-sm"
+                >
+                  {primaryCTA.label}
+                </a>
+              </div>
+            )}
+
+            {primaryCTA && secondaryCTA && (
+              <span class="text-xs font-sans font-bold text-gray-400 uppercase tracking-widest">OR</span>
+            )}
+
+            {secondaryCTA && (
+              <a 
+                href={secondaryCTA.href} 
+                id="secondary-cta-btn"
+                  class="inline-block font-sans font-bold px-8 py-4 rounded-full bg-brand-secondary text-brand-primary hover:bg-brand-primary hover:text-white transition-colors"
+              >
+                {secondaryCTA.label}
+              </a>
+            )}
+          </div>
+        )}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const initCta = () => {
+    const buttons = ['primary-cta-btn', 'secondary-cta-btn'];
+    
+    buttons.forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          if (btn.getAttribute('href') === '#') {
+            e.preventDefault();
+            if (typeof window !== 'undefined' && window.openOurWorkMenu) {
+              window.openOurWorkMenu();
+            }
+          }
+        });
+      }
+    });
+  };
+  
+  initCta();
+  document.addEventListener('astro:after-swap', initCta);
+</script>

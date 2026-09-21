@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import UserMenu from '../components/auth/UserMenu.astro';
+---
+
+<Layout title="Dashboard">
+  <nav class="bg-white border-b border-gray-200 px-4 py-2.5 flex justify-between items-center">
+    <span class="text-xl font-bold text-gray-800">My Application</span>
+    <UserMenu />
+  </nav>
+
+  <main class="p-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">Welcome to your Dashboard</h1>
+<p class="text-gray-600 mb-8">You are successfully authenticated via AWS Cognito.</p>
+       
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+         <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+           <h3 class="font-semibold text-gray-800 mb-2">Profile Status</h3>
+           <p class="text-sm text-gray-500">Account is active and managed by AWS Cognito.</p>
+         </div>
+         <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+           <h3 class="font-semibold text-gray-800 mb-2">Auth Layer</h3>
+           <p class="text-sm text-gray-500">Currently using AmplifyAuthProvider (Phase 3).</p>
+         </div>
+         <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+           <h3 class="font-semibold text-gray-800 mb-2">Security</h3>
+           <p class="text-sm text-gray-500">Secure authentication provided by AWS infrastructure.</p>
+         </div>
+       </div>
+      <p class="text-gray-600 mb-8">You are successfully authenticated via the Mock Auth Provider.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+          <h3 class="font-semibold text-gray-800 mb-2">Profile Status</h3>
+          <p class="text-sm text-gray-500">Account is active and verified in local storage.</p>
+        </div>
+        <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+          <h3 class="font-semibold text-gray-800 mb-2">Auth Layer</h3>
+          <p class="text-sm text-gray-500">Currently using MockAuthProvider (Phase 1).</p>
+        </div>
+        <div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+          <h3 class="font-semibold text-gray-800 mb-2">Next Step</h3>
+          <p class="text-sm text-gray-500">Transition to real AWS Cognito integration.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

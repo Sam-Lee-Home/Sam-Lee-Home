@@ -11,22 +11,22 @@ interface Props {
 const { 
   brandName = "SinguLarity",
     navLinks = [
-      { label: "Our Philosophy", href: "/philosophy" },
+      { label: "Our Philosophy", href: `${import.meta.env.BASE_URL}/philosophy` },
         { 
           label: "Our Work", 
           href: "#", 
           children: [
-            { label: "Software Development Environment", href: "/software-development-environment" },
-            { label: "Web Development", href: "/web-development" },
-            { label: "IAM Roles Anywhere", href: "/iam-roles-anywhere" },
-             { label: "S3 Storage Class", href: "/s3-storage-class" },
-            { label: "Webhook", href: "/webhook" }
+            { label: "Software Development Environment", href: `${import.meta.env.BASE_URL}/software-development-environment` },
+            { label: "Web Development", href: `${import.meta.env.BASE_URL}/web-development` },
+            { label: "IAM Roles Anywhere", href: `${import.meta.env.BASE_URL}/iam-roles-anywhere` },
+             { label: "S3 Storage Class", href: `${import.meta.env.BASE_URL}/s3-storage-class` },
+            { label: "Webhook", href: `${import.meta.env.BASE_URL}/webhook` }
           ] 
         },
-      { label: "News", href: "/news" },
-        { label: "Login", href: "/login" },
+      { label: "News", href: `${import.meta.env.BASE_URL}/news` },
+        { label: "Login", href: `${import.meta.env.BASE_URL}/login` },
     ],
-  cta = { label: "Contact Us", href: "/contact" },
+  cta = { label: "Contact Us", href: `${import.meta.env.BASE_URL}/contact` },
   noBottomPadding = false
 } = Astro.props;
 ---
@@ -39,7 +39,7 @@ const {
   <nav class="max-w-7xl mx-auto flex justify-between items-center">
     <!-- Brand Area -->
     <div class="flex items-center gap-3">
-      <a href="/" class="flex items-center gap-3">
+      <a href={import.meta.env.BASE_URL} class="flex items-center gap-3">
         <BrandLogo />
       </a>
     </div>
@@ -124,11 +124,11 @@ const {
         document.getElementById('nav-logout-btn')?.addEventListener('click', async (e) => {
           e.preventDefault();
           await authService.signOut();
-          window.location.href = '/';
+          window.location.href = import.meta.env.BASE_URL;
         });
       } else {
         container.innerHTML = `
-          <a href="/login" class="font-sans text-xs font-bold px-4 py-2 rounded-full border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all duration-200">
+          <a href={`${import.meta.env.BASE_URL}/login`} class="font-sans text-xs font-bold px-4 py-2 rounded-full border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all duration-200">
             Login
           </a>
         `;

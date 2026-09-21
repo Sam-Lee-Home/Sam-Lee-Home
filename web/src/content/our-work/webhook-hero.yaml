@@ -1,0 +1,2 @@
+headline: "Zero-Compute Webhook Architecture"
+description: "A high-efficiency blueprint for streaming event data directly to endpoints. While implemented here via AWS Service Proxy to S3, this pattern enables any event source to trigger non-AWS consumers with zero cold starts and maximum cost-efficiency."

@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LoginForm from '../components/auth/LoginForm.astro';
+import MinimalHeader from '../components/MinimalHeader.astro';
+---
+
+<Layout title="Login">
+  <MinimalHeader />
+  <main class="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <LoginForm />
+  </main>
+</Layout>

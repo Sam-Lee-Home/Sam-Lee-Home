@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MinimalHeader from '../components/MinimalHeader.astro';
+import StructuredDarkFooter from '../components/StructuredDarkFooter.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SplitHeroSection from '../components/SplitHeroSection.astro';
+import { getCollection } from 'astro:content';
+
+const philosophyEntries = await getCollection('philosophy');
+const sortedCards = philosophyEntries
+  .flatMap(entry => entry.data)
+  .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+const heroCollection = await getCollection('philosophy-hero');
+const hero = heroCollection[0]?.data || { headline: '', description: '' };
+
+const breadcrumbs = [
+  { label: 'Our Philosophy', href: '/philosophy' },
+];
+
+const categories = [...new Set(sortedCards.map(card => card.category))];
+---
+
+<Layout>
+  <div class="philosophy-page">
+    <MinimalHeader />
+
+    <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+      <Breadcrumbs items={breadcrumbs} centered noTopPadding />
+    </div>
+
+    <SplitHeroSection 
+      headline={hero.headline}
+    >
+      <div slot="description" class="inline [&_a]:text-brand-primary [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_li]:mb-1" set:html={hero.description} />
+    </SplitHeroSection>
+
+    <main class="px-4 pb-8 pt-0 md:px-8 lg:px-16 max-w-7xl mx-auto">
+      <div class="flex flex-col gap-12 mt-12">
+        {categories.map((category) => (
+          <div class="flex flex-col border-2 border-[var(--color-brand-primary)] rounded-lg overflow-hidden bg-white shadow-sm w-full">
+            <div class="bg-[var(--color-brand-primary)] px-4 py-4">
+              <h2 class="text-white font-bold text-2xl font-serif">
+                {category}
+              </h2>
+            </div>
+            <div class="p-8 flex flex-col gap-8">
+              {sortedCards.filter(card => card.category === category).map((card) => (
+                <div class="flex flex-col gap-2">
+                  <h3 class="font-bold text-gray-900 text-lg font-sans">
+                    {card.title}
+                  </h3>
+                   <p class="text-gray-700 leading-relaxed [&_a]:text-brand-primary [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_li]:mb-1" set:html={card.description} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+
+    <StructuredDarkFooter />
+  </div>
+</Layout>
+
+<style>
+  .philosophy-page :global(a) {
+    text-decoration: none !important;
+  }
+  .philosophy-page :global(a:hover) {
+    text-decoration: underline !important;
+  }
+</style>

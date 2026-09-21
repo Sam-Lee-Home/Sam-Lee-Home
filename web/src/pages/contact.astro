@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import MinimalHeader from "../components/MinimalHeader.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import StructuredDarkFooter from "../components/StructuredDarkFooter.astro";
+import { getCollection } from 'astro:content';
+
+const contactCollection = await getCollection('contact');
+const contactContent = contactCollection[0]?.data || { headline: '', description: '' };
+
+
+---
+
+<Layout>
+  <MinimalHeader noBottomPadding />
+  <Breadcrumbs items={[{ label: "Contact Us", href: "/contact" }]} centered noTopPadding />
+
+  <main class="min-h-screen py-20 px-6 flex items-center justify-center bg-bg-main">
+    <div class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
+      <!-- Left Column: Description -->
+      <div class="text-left">
+        <h1 class="font-serif text-5xl md:text-6xl text-gray-900 leading-tight mb-6">
+          Have a project in mind?
+        </h1>
+        <p class="font-sans text-lg md:text-xl text-gray-600 leading-relaxed">
+           Tell us a business problem, a pain point, or an automation idea. Or just want to say hello? Fill out the form and we shall get back to you shortly. 
+           We specialize in building elite software using agentic AI.
+         </p>
+      </div>
+
+      <!-- Right Column: Form -->
+      <div class="bg-gray-50 p-8 md:p-12 rounded-3xl border border-brand-primary shadow-sm">
+        <form id="contact-form" class="flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label for="name" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                required 
+                placeholder="John Doe"
+                class="font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="email" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                required 
+                placeholder="john@example.com"
+                class="font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label for="company" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Company</label>
+              <input 
+                type="text" 
+                id="company" 
+                placeholder="Company Name"
+                class="font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="team" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Team</label>
+              <select 
+                id="team" 
+                required
+                class="font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all bg-white"
+              >
+                <option value="Entrepreneur">Entrepreneur</option>
+                <option value="Early startup">Early startup</option>
+                <option value="Mid-size company">Mid-size company</option>
+                <option value="Enterprise">Enterprise</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="message" class="font-sans text-sm font-bold text-gray-700 uppercase tracking-wider">Message</label>
+            <textarea 
+              id="message" 
+              required 
+              rows="5" 
+              placeholder="Tell us about your project..."
+              class="font-sans px-4 py-3 rounded-xl border border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all resize-none"
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            id="submit-btn" 
+            class="font-sans font-bold px-8 py-4 rounded-full bg-brand-primary text-white hover:bg-yellow-700 transition-colors shadow-md text-center"
+          >
+            Send Message
+          </button>
+        </form>
+
+        <p id="response-msg" class="mt-6 text-center font-sans font-medium" style="display: none;"></p>
+      </div>
+    </div>
+    </main>
+
+    <StructuredDarkFooter />
+
+    <script>
+    const API_ENDPOINT = "https://1rh7nnjh3h.execute-api.us-east-1.amazonaws.com/prod/submit";
+
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const responseMsg = document.getElementById("response-msg");
+    const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = (document.getElementById("name") as HTMLInputElement).value;
+      const email = (document.getElementById("email") as HTMLInputElement).value;
+      const company = (document.getElementById("company") as HTMLInputElement).value;
+      const team = (document.getElementById("team") as HTMLSelectElement).value;
+      const message = (document.getElementById("message") as HTMLTextAreaElement).value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Sending...";
+
+      try {
+        const formData = new URLSearchParams();
+        formData.append("Subject", `Contact Request: ${name} ${company ? `(${company})` : ''}`);
+        formData.append("Message", `Name: ${name} 
+Email: ${email} 
+Company: ${company} 
+Team: ${team} 
+
+Message: ${message}`);
+
+
+        const response = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: formData.toString()
+        });
+
+        if (response.ok) {
+          if (responseMsg) {
+            responseMsg.innerText = "Thank you! Your message was sent successfully.";
+            responseMsg.style.color = "green";
+            responseMsg.style.display = "block";
+          }
+          form.reset();
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        if (responseMsg) {
+          responseMsg.innerText = "Oops! Something went wrong. Please try again.";
+          responseMsg.style.color = "red";
+          responseMsg.style.display = "block";
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Send Message";
+      }
+    });
+  </script>
+</Layout>

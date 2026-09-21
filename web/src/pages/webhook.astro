@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MinimalHeader from '../components/MinimalHeader.astro';
+import StructuredDarkFooter from '../components/StructuredDarkFooter.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SplitHeroSection from '../components/SplitHeroSection.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import webhookImage from '../content/our-work/webhook.png';
+
+const allOurWork = await getCollection('our-work');
+
+const bodyEntry = allOurWork.find(entry => entry.id === 'src/content/our-work/webhook');
+const sortedCards = Array.isArray(bodyEntry?.data) 
+  ? [...bodyEntry.data].sort((a, b) => (a.order || 0) - (b.order || 0))
+  : [];
+
+const heroEntry = allOurWork.find(entry => entry.id === 'src/content/our-work/webhook-hero');
+const hero = heroEntry?.data || { headline: '', description: '' };
+
+const breadcrumbs = [
+  { label: 'Our Work' },
+  { label: 'Webhook', href: '/webhook' },
+];
+---
+
+<Layout>
+    <MinimalHeader />
+
+    <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+      <Breadcrumbs items={breadcrumbs} centered noTopPadding />
+    </div>
+
+    <SplitHeroSection 
+      headline={hero.headline}
+    >
+      <p slot="description" class="inline" set:html={hero.description} />
+    </SplitHeroSection>
+
+    <main class="px-4 pb-8 pt-0 md:px-8 lg:px-16 max-w-7xl mx-auto">
+      <div class="flex flex-col gap-8 mt-12">
+        {sortedCards.map((card) => (
+          <div class="flex flex-col border-2 border-[var(--color-brand-primary)] rounded-lg overflow-hidden bg-white shadow-sm w-full">
+            <div class="bg-[var(--color-brand-primary)] px-4 py-4">
+              <h2 class="text-white font-bold text-xl font-serif">
+                {card.title}
+              </h2>
+            </div>
+            <div class="p-6 flex flex-col gap-4">
+              {card.image && (
+                <Image 
+                  src={card.image === './webhook.png' ? webhookImage : card.image} 
+                  alt={card.title} 
+                  class="w-full h-auto rounded-md" 
+                />
+              )}
+              <div class="text-gray-700 leading-relaxed [&_a]:text-brand-primary [&_a]:no-underline [&_a]:hover:underline [&_a]:hover:opacity-80 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_li]:mb-1" set:html={card.description} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+
+    <StructuredDarkFooter />
+</Layout>

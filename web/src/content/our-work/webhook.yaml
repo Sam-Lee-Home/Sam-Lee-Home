@@ -1,0 +1,22 @@
+- category: "Serverless Architecture"
+  title: "Architecture"
+  image: "./webhook.png"
+  order: 0
+
+- category: "Serverless Architecture"
+  title: "Overview"
+  description: |
+    <ul>
+      <li><strong>The Source & Trigger</strong>: A custom event source publishes an event to an SNS topic, which instantly fires an HTTPS POST payload to your API Gateway webhook.</li>
+      <li><strong>The Service Proxy</strong>: Bypassing compute entirely, API Gateway routes the request to its S3 integration. It translates the POST request into an S3 PutObject command, dynamically generating a unique filename (like $context.requestId).</li>
+      <li><strong>The Write</strong>: Assuming a tightly scoped IAM Execution Role, API Gateway writes the raw JSON payload directly to the target S3 bucket.</li>
+    </ul>
+  order: 1
+
+- category: "Serverless Architecture"
+  title: "Zero-Trust Security (Optional)"
+  description: |
+    <strong>Validation Lambda</strong>: To implement zero-trust security, point API Gateway to an intermediate Lambda function instead of the S3 service proxy.
+    <br /><br />
+    <strong>How it works</strong>: The Lambda inspects the payload body, fetches the official AWS certificate URL, and cryptographically verifies the RSA signature of the SNS message before writing it to S3. Any forged or modified message is rejected.
+  order: 2

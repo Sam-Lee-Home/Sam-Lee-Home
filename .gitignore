@@ -21,3 +21,9 @@ temp/
 # counterproductive to check this file into the repository.
 # Details at https://github.com/github/pages-gem/issues/768
 Gemfile.lock
+
+
+# AI and local environment artifacts
+*.bak
+doc/*.docx
+doc/*_plan.md

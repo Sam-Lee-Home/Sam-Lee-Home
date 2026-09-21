@@ -1,0 +1,67 @@
+
+- category: "Comparative Advantage"
+  description: |
+    <div class="overflow-x-auto mb-6">
+      <table class="min-w-full border-collapse border border-gray-300 text-sm">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border border-gray-300 px-4 py-2 text-left font-bold">Role</th>
+            <th class="border border-gray-300 px-4 py-2 text-left font-bold">Task</th>
+            <th class="border border-gray-300 px-4 py-2 text-left font-bold">Why Comparative Advantage Dictates It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-gray-300 px-4 py-2 font-medium">Human</td>
+            <td class="border border-gray-300 px-4 py-2">Thinking (Framing, prompting, evaluating, deciding)</td>
+            <td class="border border-gray-300 px-4 py-2">The human opportunity cost of thinking is low compared to the massive value it produces; human judgment cannot be outsourced without losing alignment and accountability.</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 px-4 py-2 font-medium">AI</td>
+            <td class="border border-gray-300 px-4 py-2">Coding (Synthesizing, drafting, formatting, typing)</td>
+            <td class="border border-gray-300 px-4 py-2">The AI's opportunity cost of generation is zero; it possesses unmatched speed and scale in translating thoughts into structured output.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mb-4">
+      When humans try to do the "coding" (the mechanical execution, drafting, and boilerplate), they are misallocating their rarest resource: attention.
+    </p>
+    <p class="mb-4">
+      By letting AI absorb the high-friction, low-cost labor of transcription, syntax, and drafting ("coding"), humans are freed to operate at the top of their cognitive stack—defining objectives, asking the right questions, and deciding what matters ("thinking").
+    </p>
+    <p>
+      Total output expands not because AI replaces human intellect, but because the bottleneck of manual execution is removed.
+    </p>
+  order: 1
+- category: "Design principles of AI systems"
+  description: "The AI industry is chasing <a href='https://doi.org/10.48550/arXiv.2001.08361' target='_blank' class='text-brand-primary underline hover:text-brand-primary-dark'>scaling laws</a> &mdash; bigger models, more compute. We, on the other hand, design AI systems around the paradigm popularized by <a href='https://about.getcoai.com/video/andrej-karpathy-bigger-models-arent-the-answer/' target='_blank' class='text-brand-primary underline hover:text-brand-primary-dark'>Andrej Karpathy</a>: <strong>Small Models</strong>, <strong>Right Tools</strong>, and <strong>Tight Feedback Loops</strong>."
+  order: 2
+- category: "Design principles of AI systems"
+  title: "Small Models"
+  description: "We use fast, compact models (~30B parameters) for instruction-following and reasoning. They are cost-effective, run with low latency, and can be deployed locally."
+  order: 3
+- category: "Design principles of AI systems"
+  title: "Right Tools"
+  description: "We surround the model with a harness — RAG agent, web search, command prompt, unit test framework, and quality gate. The intelligence sits in the software system, not just the static model weights."
+  order: 4
+- category: "Design principles of AI systems"
+  title: "Tight Feedback Loops"
+  description: "We leverage automated self-correction. A small model iterating through test suites and correcting its own errors is consistently more cost effective than a massive model trying to produce complex logic in a single shot."
+  order: 5
+
+- category: "Design principles of cloud systems"
+  description: "Architecting for the cloud: <strong>Cloud-Native</strong> by design, <strong>AWS</strong> by specialty. Our approach follows three core pillars of cloud resilience and efficiency."
+  order: 6
+- category: "Design principles of cloud systems"
+  title: "Elasticity"
+  description: "Implementing <strong>autoscaling</strong> to ensure performance scales with demand while optimizing cost."
+  order: 7
+- category: "Design principles of cloud systems"
+  title: "Operational Excellence"
+  description: "Leveraging <strong>managed services</strong> to strip away infrastructure toil and accelerate feature delivery."
+  order: 8
+- category: "Design principles of cloud systems"
+  title: "Resilience"
+  description: "Designing <strong>multi-cloud ready</strong> architectures that eliminate vendor lock-in without sacrificing the deep integration of our primary AWS stack."
+  order: 9

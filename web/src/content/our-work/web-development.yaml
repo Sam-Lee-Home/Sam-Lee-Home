@@ -1,0 +1,64 @@
+- category: "Web Development"
+  title: "Architecture"
+  description: ""
+  image: "./web-development.png"
+  order: 0
+
+- category: "Web Development"
+  title: "Astro: Optimized by Default"
+  description: |
+    Leveraging advanced Static Site Generation (SSG), <a href="https://astro.build/" target="_blank">Astro</a> compiles optimized, zero-JavaScript HTML by default at build time. This minimizes payload size, ensuring exceptional Core Web Vitals and near-instant First Contentful Paint (FCP).
+  order: 1
+
+- category: "Web Development"
+  title: "Chatbot: Partial Hydration via Islands"
+  description: |
+    Astro’s <a href="https://docs.astro.build/en/concepts/islands/" target="_blank">"Islands Architecture"</a> enables precise, partial hydration. We embed interactive <a href="https://react.dev/" target="_blank">React</a> components (e.g. <a href="https://www.assistant-ui.com/" target="_blank">Assistant UI</a>) directly within static HTML, hydrating them conditionally based on load, idle time, or visibility. This granular control over JavaScript execution unblocks the main thread, maximizing performance while delivering complex UI logic exactly where needed.
+  order: 2
+
+- category: "Web Development"
+  title: "Chatbot: Amazon Bedrock AgentCore"
+  description: |
+    We power the chatbot's backend using <a href="https://aws.amazon.com/bedrock/agentcore/" target="_blank">Amazon Bedrock AgentCore</a>, equipping it with enterprise-grade capabilities:<br /><br />
+    <ul>
+      <li><strong>Persistent Context</strong>: <a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html" target="_blank">AgentCore Memory</a> handles short-term conversational state for seamless session continuity.</li>
+      <li><strong>Real-Time Discovery</strong>: <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/web-search.html" target="_blank">Bedrock web search</a> integration enables live, up-to-date external lookups.</li>
+      <li><strong>RAG</strong>: Direct connections to <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html" target="_blank">Bedrock Knowledge Bases</a> ensure high-precision, domain-specific document retrieval.</li>
+    </ul>
+  order: 3
+
+- category: "Web Development"
+  title: "Chatbot: Content Collections"
+  description: |
+    Astro’s <a href="https://docs.astro.build/en/guides/content-collections/" target="_blank">Content Collections</a> enforce a strict boundary between raw content and presentation logic. This decoupled data layer allows us to feed site content directly into a Retrieval-Augmented Generation (RAG) pipeline. The result is an intelligent, context-aware chatbot powered by the exact same synchronized data source that drives the website.
+  order: 4
+
+- category: "Web Development"
+  title: "Contact Us: Serverless Pipeline"
+  description: |
+    Users can contact our engineering team directly through a secure, fully serverless pipeline. Form submissions are routed instantly via <a href="https://aws.amazon.com/api-gateway/" target="_blank">Amazon API Gateway</a> and <a href="https://aws.amazon.com/sns/" target="_blank">Amazon SNS</a>, delivering inquiries straight to our inbox with zero server maintenance, high availability, and low latency.
+  order: 5
+
+- category: "Web Development"
+  title: "Hosting: Rapid Prototyping via GitHub Pages"
+  description: |
+    This demonstration site is deployed on <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages" target="_blank">GitHub Pages</a>. As a zero-cost, static file delivery service, it is highly effective for rapid prototyping and architectural proofs-of-concept. While perfectly suited for serving our optimized SSG build, enterprise-grade production workloads require more robust infrastructure.
+  order: 6
+
+- category: "Web Development"
+  title: "Hosting: The Production Upgrade"
+  description: |
+    Purely static hosts carry strict architectural limitations, such as bandwidth throttling and a complete lack of native server-side compute capabilities. For live client deployments, we migrate to advanced platforms (e.g., <a href="https://docs.astro.build/en/guides/deploy/aws/" target="_blank">AWS Amplify</a>, <a href="https://docs.astro.build/en/guides/deploy/vercel/" target="_blank">Vercel</a>, or <a href="https://docs.astro.build/en/guides/deploy/cloudflare/" target="_blank">Cloudflare</a>) to unlock mission-critical features:<br /><br />
+    <ul>
+      <li><strong>Compute-on-Demand</strong>: Enables <a href="https://docs.astro.build/en/guides/on-demand-rendering/" target="_blank">Server-Side Rendering (SSR)</a> and integrated edge APIs (e.g. authenticating users, personalizing content, securing requests), which are impossible on static-only hosts.</li>
+      <li><strong>Global Scalability</strong>: Leverages advanced CDNs for dynamic edge caching, guaranteeing minimal latency worldwide.</li>
+      <li><strong>High Availability</strong>: Provides the SLAs, custom routing, and security compliance required for enterprise traffic.</li>
+    </ul>
+  order: 7
+  
+- category: "Web Development"
+  title: "Authentication: Amazon Cognito"
+  description: |
+    Secure user onboarding, login, and logout lifecycles are powered by <a href="https://aws.amazon.com/pm/cognito/" target="_blank">Amazon Cognito</a>. As a managed, serverless identity provider, Cognito is an enterprise-grade identity layer with zero backend maintenance. Leveraging industry-standard JSON Web Tokens (JWTs) for session state, the architecture verifies identities, and gates access to protected resources.
+  order: 8
+

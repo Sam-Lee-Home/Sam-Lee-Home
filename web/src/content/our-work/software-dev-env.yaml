@@ -1,0 +1,68 @@
+- category: "Software Development Environment"
+  title: "Architecture"
+  description: ""
+  image: "./software_dev_env.png"
+  order: 0
+
+- category: "Software Development Environment"
+  title: "VS Code: IDE"
+  description: |
+    <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code (VS Code)</a> is the extensible IDE that anchors our engineering stack. It provides the necessary interface for developers to orchestrate AI agents, verify generated code, and maintain strict control over the development lifecycle.<br /><br />
+    <strong>Verify and Intervene</strong>: LLM hallucinates. The capabilities for human engineers to verify and intervenue work produced by LLM are paramount.<br /><br />
+    <strong>Lightweight and powerful</strong>: It launches quickly, nimble on resource consumption, and yet offers human accessible features, such as debugging, syntax highligting, code completion, unit tests, code coverage, etc.<br /><br />
+    <strong>Native Polyglot Capabilities</strong>: User can seamlessly jump from a Python script, to a React/JavaScript frontend file, to a Bash script, to a Jupyter Notebook, with tailored syntax support for each.<br /><br />
+    <strong>Seamless AI Integration</strong>: Through extensions, agent harnesses can read context, interact directly with the editor, built-in terminal, and Git Integration.<br /><br />
+    <strong>Backed by Microsoft and Open Source</strong>: This guarantees active community contribution and enterprise-grade stability and frequent, reliable updates.
+  order: 1
+
+- category: "Software Development Environment"
+  title: "Cline: The Agent Harness"
+  description: |
+    An agent harness transforms a chatbot into an autonomous problem-solver that plans, executes, and iterates. It breaks complex goals into manageable sub-tasks, dynamically accesses external tools, and continuously critiques and corrects its own work in a tight feedback loop. Andrew Ng recently presented evidence <a href="https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance" target="_blank">proving</a> that smaller models using iterative reflection outperform massive, more intelligent LLMs by a wide margin.<br /><br />
+    <strong>Vendor & Model Agnostic</strong>: <a href="https://cline.bot/" target="_blank">Cline</a> does not lock developers into a single LLM provider.<br /><br />
+    <strong>Tool Integration via MCP</strong>: Instead of relying solely on frozen training data, Cline can use the Model Context Protocol (MCP) to pull live, real-time context via AWS Bedrock Web Search and securely query proprietary domain knowledge via AWS Bedrock knowledge base (RAG).<br /><br />
+    <strong>Rules and skills</strong>: Integrates guardrails (inspired by Andrej Karpathy's <a href="https://github.com/multica-ai/andrej-karpathy-skills" target="_blank">analysis of LLM pitfalls</a>) to mitigate common agent failures:
+    <ul>
+      <li><strong>Think before coding</strong>: surfacing explicit assumptions rather than guessing</li>
+      <li><strong>Prioritize simplicity first</strong>: rejecting over-engineered code and bloat</li>
+      <li><strong>Execute surgical changes</strong>: touching only required files without breaking adjacent layout</li>
+      <li><strong>Run goal-driven execution</strong>: defining explicit, checkable verification criteria before marking work done</li>
+    </ul>
+    <strong>Human-in-the-Loop Safeguards</strong>: The agent transparently exposes its "thought process." It requires explicit developer approval before executing shell commands, modifying the file system, or pushing code, preventing destructive AI actions.
+  order: 2
+
+- category: "Software Development Environment"
+  title: "AWS Bedrock Web Search"
+  description: |
+    LLMs are limited by their training data cutoffs, making them blind to the newest software libraries, recent bug fixes, and updated documentation. <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/web-search.html" target="_blank">AWS Bedrock Web Search</a> acts as a secure, built-in gateway to the live internet, allowing the AI to autonomously research the web, aggregate technical findings, and inject up-to-date facts directly into the development workflow.<br /><br />
+    <strong>Amazon’s Proprietary Web Index & Knowledge Graph</strong>: Rather than proxying requests to third-party search providers, this harness is backed by a continually refreshed web index operated entirely by Amazon. It combines this massive index with a built-in knowledge graph, allowing the AI to anchor entities and retrieve high-confidence, verified facts instead of guessing from unstructured page text.<br /><br />
+    <strong>Semantic Snippet Extraction</strong>: To preserve valuable context window limits and reduce token costs, it does not return raw, bloated HTML pages. Instead, it performs semantic snippet extraction, pulling only the exact relevant passages and returning highly optimized context to the AI model.<br /><br />
+    <strong>Zero Data Egress</strong>: Traditionally, giving an agent web access meant sending proprietary research queries to external search vendors, creating a massive security risk. With Bedrock, the entire search lifecycle is executed server-side. Your queries never leave your secured AWS boundary, ensuring uncompromising data residency and zero external data leakage.
+  order: 3
+
+- category: "Software Development Environment"
+  title: "AWS Bedrock Knowledge Base: RAG"
+  description: |
+    LLMs know how to write code, but they are entirely blind to your proprietary codebase, business logic, and architectural standards. Retrieval-Augmented Generation (RAG) bridges this gap. By connecting to <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html" target="_blank">AWS Bedrock Knowledge Bases</a>, an agent is transformed into a highly specialized expert on your specific enterprise environment, injecting private domain knowledge into the workflow.<br /><br />
+    <strong>Contextual Code Generation</strong>: Instead of relying on generalized internet knowledge, the agent dynamically queries your internal sources to ensure the code it produces aligns with your internal knowledge.<br /><br />
+    <strong>Enterprise-Grade Infrastructure</strong>: Built on AWS Bedrock, this integration provides scalable, fully managed vector search capabilities. It allows agents to securely ingest, embed, and retrieve complex technical context across proprietary repositories.<br /><br />
+    <strong>Zero-Leakage Security</strong>: AWS Bedrock guarantees that your private data is never used to train public foundation models. Your domain knowledge remains isolated, encrypted, and strictly governed within your secure cloud environment.
+  order: 4
+
+- category: "Software Development Environment"
+  title: "SonarQube: Quality Gates"
+  description: |
+    A quality gate is a reviewer that inspects code for bugs, vulnerabilities, and inefficiencies.<br /><br />
+    <strong>Autonomous Remediation</strong>: The agent harness can be configured to read the <a href="https://www.sonarsource.com/products/sonarqube/" target="_blank">SonarQube</a> diagnostic logs, autonomously researches the root cause of the vulnerability, and applies the fix iteratively using the concept of autoresearch.<br /><br />
+    <strong>Technical Debt</strong>: By enforcing strict static analysis, SonarQube prevents technical debt, code smells, and anti-patterns.<br /><br />
+    <strong>Security Validation</strong>: SonarQube continuously scans for security flaws and industry-standard vulnerabilities (like OWASP Top 10).
+  order: 5
+
+- category: "Software Development Environment"
+  title: "Graphify: Architectural Clarity"
+  description: |
+    Traditional AI operate on flat files, "discovering" a codebase by grepping through folders and burning thousands of tokens. <a href="https://graphify.net/" target="_blank">Graphify</a> solves this context problem by converting an entire project—code, documentation, schemas, and config files—into a persistent, queryable knowledge graph. It acts as the memory layer for the AI agent, giving them an architectural map.<br /><br />
+    <strong>Eliminating Flat-File Blindness</strong>: Instead of making an AI parse files sequentially, Graphify maps structural relationships (imports, references, function calls) across modules. This allows agents to understand how disparate parts of a complex system connect, drastically reducing hallucinations on cross-file questions.<br /><br />
+    <strong>Token Efficiency</strong>: By pre-computing a structured map rather than feeding raw files into every prompt, Graphify cuts down token overhead dramatically. This makes AI interactions faster, more affordable, and capable of scaling to massive enterprise repos.<br /><br />
+    <strong>Clarity</strong>: Graphify generates persistent human-readable reports and interactive visual maps (graph.html, GRAPH_REPORT.md). It can document generated code and map system layout, providing architectural clarity for both AI agents and human engineering teams.
+  order: 6

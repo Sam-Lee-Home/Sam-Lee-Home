@@ -1,0 +1,102 @@
+- category: "AWS Infrastructure"
+  title: "Architecture"
+  image: "./s3_storage_class.png"
+  order: 0
+
+- category: "AWS Infrastructure"
+  title: "S3 storage classes"
+  description: |
+    AWS offers multiple <a href="https://aws.amazon.com/s3/storage-classes/" target="_blank">S3 storage classes</a>, each balancing storage costs against retrieval speeds and fees. Moving data to the wrong tier can result in surprise retrieval penalties.
+    <br /><br />
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc; text-align: left;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ccc; padding: 8px;">Storage Class</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Best For...</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Pros</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Cons</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Approx. Cost (per GB/mo)*</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Standard</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Active, frequently accessed data (e.g., website assets, active application data).</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Millisecond access; no data retrieval fees; no minimum storage duration.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Most expensive storage option.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.023</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Intelligent-Tiering</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Data with unknown or unpredictable access patterns.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Automatically moves data to cheaper tiers when not accessed; no retrieval fees.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Small monthly monitoring fee per object; not ideal for tiny files (&lt;128KB).</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.023 to $0.00099</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Standard-IA</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Data accessed less than once a month, but needs instant access when needed.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">~50% cheaper storage than Standard; millisecond access.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Charges a per-GB retrieval fee; 30-day minimum storage duration.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.0125</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Glacier Instant Retrieval</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Rarely accessed data (once a quarter) that still requires instant access.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">~80% cheaper than Standard; millisecond access.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">High retrieval fees if accessed frequently; 90-day minimum storage.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.004</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Glacier Flexible Retrieval</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Archives, backups, and disaster recovery data.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Extremely low cost; free bulk retrievals.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Retrieval takes anywhere from 1 to 12 hours; 90-day minimum storage.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.0036</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;"><strong>Glacier Deep Archive</strong></td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Long-term digital preservation and regulatory compliance (accessed once a year).</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Absolute lowest cost (saves ~95% vs. Standard).</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Retrieval takes 12 to 48 hours; 180-day minimum storage duration.</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">$0.00099</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 0.8em; margin-top: 10px;">Note: Pricing based on standard AWS US-East (N. Virginia) rates and is subject to change. S3 also charges for PUT/COPY requests when moving data.</p>
+  order: 1
+
+- category: "AWS Infrastructure"
+  title: "Hidden Fees"
+  description: |
+    The biggest mistake companies make is aggressively moving data to cold storage without analyzing their access patterns. If your application frequently reads data stored in Standard-IA or Glacier Instant Retrieval, the retrieval fees will easily cost you more than just leaving it in Standard.
+  order: 2
+
+- category: "AWS Infrastructure"
+  title: "Storage Class Migration"
+  description: |
+    <ol class="list-decimal ml-6 flex flex-col gap-4">
+      <li><strong>Scan (<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-inventory.html" target="_blank">S3 Inventory</a>)</strong>: Configure daily scans of your S3 buckets to map every object, tracking its age, size, and current storage tier. Inventory data is output as compressed <a href="https://parquet.apache.org/" target="_blank">Parquet</a> files, making petabyte-scale analysis lightning-fast and cost-effective.</li>
+      <li><strong>Query (<a href="https://docs.aws.amazon.com/athena/latest/ug/what-is.html" target="_blank">Amazon Athena</a>)</strong>: Run queries against the metadata to identify cold, unused objects. Export the result as a manifest.</li>
+      <li><strong>Migrate (<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html" target="_blank">S3 Batch Operations</a>)</strong>: Feed the manifest into S3 Batch Operations to transition objects to a different storage class in a single sweep.</li>
+    </ol>
+  order: 3
+
+- category: "AWS Infrastructure"
+  title: "The Alternative: S3 Lifecycle Rules"
+  description: |
+    For data with highly predictable aging patterns, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html" target="_blank">S3 Lifecycle Policies</a> is a viable alternative. Instead of a surgical, one-time migration, Lifecycle rules act as an automated background policy (e.g., "Move all files in this folder to Glacier after 90 days").
+    <br /><br />
+    <strong class="text-brand-primary">The Pros: Autopilot Savings</strong>
+    <ul class="list-disc ml-6">
+      <li><strong>Set It & Forget It</strong>: AWS handles transitions automatically in the background.</li>
+      <li><strong>Zero Overhead</strong>: No queries, manifests, or batch jobs to manage.</li>
+      <li><strong>Perfect For</strong>: Routine time-series data, daily logs, and compliance backups.</li>
+    </ul>
+    <br />
+    <strong class="text-brand-primary">The Cons: Rigid & Risky</strong>
+    <ul class="list-disc ml-6">
+      <li><strong>Blind Execution</strong>: Rules act blindly on file age. Transitioning an active file by mistake triggers app failures and massive retrieval penalties.</li>
+      <li><strong>No Preview</strong>: You can’t review a hit-list before the data moves.</li>
+    </ul>
+  order: 4

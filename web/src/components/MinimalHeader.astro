@@ -1,0 +1,139 @@
+---
+import BrandLogo from './BrandLogo.astro';
+
+interface Props {
+  brandName?: string;
+  navLinks?: Array<{ label: string; href: string; children?: Array<{ label: string; href: string }> }>;
+  cta?: { label: string; href: string };
+  noBottomPadding?: boolean;
+}
+
+const { 
+  brandName = "SinguLarity",
+    navLinks = [
+      { label: "Our Philosophy", href: "/philosophy" },
+        { 
+          label: "Our Work", 
+          href: "#", 
+          children: [
+            { label: "Software Development Environment", href: "/software-development-environment" },
+            { label: "Web Development", href: "/web-development" },
+            { label: "IAM Roles Anywhere", href: "/iam-roles-anywhere" },
+             { label: "S3 Storage Class", href: "/s3-storage-class" },
+            { label: "Webhook", href: "/webhook" }
+          ] 
+        },
+      { label: "News", href: "/news" },
+        { label: "Login", href: "/login" },
+    ],
+  cta = { label: "Contact Us", href: "/contact" },
+  noBottomPadding = false
+} = Astro.props;
+---
+
+<style>
+  .force-show { display: block !important; }
+</style>
+
+<header class={`w-full px-6 ${noBottomPadding ? 'pt-6 pb-0' : 'py-6'}`}>
+  <nav class="max-w-7xl mx-auto flex justify-between items-center">
+    <!-- Brand Area -->
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-3">
+        <BrandLogo />
+      </a>
+    </div>
+
+    <!-- Navigation & CTA -->
+    <div class="flex items-center gap-8">
+       <div class="hidden md:flex items-center gap-6">
+          {navLinks.filter(link => link.label !== 'Login').map(link => (
+            <div class={`relative group ${link.label === 'Our Work' ? 'our-work-container' : ''}`}>
+              <a href={link.href} class="font-sans text-sm text-gray-600 group-hover:text-brand-primary transition-colors">
+                {link.label}
+              </a>
+              {link.children && (
+                <div class={`absolute left-0 hidden group-hover:block pt-2 z-50 ${link.label === 'Our Work' ? 'our-work-menu' : ''}`}>
+                  <div class="bg-white border border-gray-100 shadow-lg rounded-lg py-2 min-w-[240px]">
+                    {link.children.map(child => (
+                      <a 
+                        href={child.href} 
+                        class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors"
+                      >
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+       <div class="flex items-center gap-4">
+         <a 
+           href={cta.href} 
+           class="font-sans text-xs font-bold px-4 py-2 rounded-full bg-brand-secondary text-brand-primary hover:bg-brand-primary hover:text-white transition-all duration-200"
+         >
+           {cta.label}
+         </a>
+         <div id="header-auth-container" class="relative"></div>
+       </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  import { authService } from '../services/auth';
+
+  // Global function to toggle the "Our Work" menu
+  window.openOurWorkMenu = function() {
+    const menu = document.querySelector('.our-work-menu');
+    if (menu) {
+      menu.classList.toggle('force-show');
+    }
+  };
+
+  async function updateHeader() {
+    const user = await authService.getCurrentUser();
+    const container = document.getElementById('header-auth-container');
+    if (container) {
+      if (user) {
+        container.innerHTML = `
+          <div class="relative group">
+            <button class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 hover:bg-brand-primary hover:text-white transition-all duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <div class="absolute right-0 hidden group-hover:block pt-2 z-50">
+              <div class="bg-white border border-gray-100 shadow-lg rounded-lg py-2 min-w-[160px]">
+                <div class="px-4 py-2 text-sm text-gray-700 font-medium">
+                  ${user.username}
+                </div>
+                <a 
+                  id="nav-logout-btn" 
+                  href="#" 
+                  class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors border-t border-gray-50"
+                >
+                  Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById('nav-logout-btn')?.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await authService.signOut();
+          window.location.href = '/';
+        });
+      } else {
+        container.innerHTML = `
+          <a href="/login" class="font-sans text-xs font-bold px-4 py-2 rounded-full border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white transition-all duration-200">
+            Login
+          </a>
+        `;
+      }
+    }
+  }
+  updateHeader();
+</script>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import FooterColumn from './FooterColumn.astro';
+import BrandLogo from './BrandLogo.astro';
+
+interface Props {
+  logoUrl: string;
+}
+
+const { logoUrl } = Astro.props;
+const footerColumns = await getCollection('footer');
+const sortedColumns = footerColumns.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+---
+
+<footer class="w-full bg-gray-800 text-white/60 py-8 md:py-12 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col gap-8">
+    
+    <!-- Information Area -->
+    <div class="flex flex-col lg:flex-row justify-between items-start gap-8">
+      <!-- Brand Column -->
+      <div class="flex flex-col gap-6">
+        <BrandLogo />
+         <p class="text-xs opacity-40">
+           &copy; {new Date().getFullYear()} <span class="font-mono-thin">&#x1D516;<i>kyL</i>ai<i>&#x2B31;</i></span>. All rights reserved.
+         </p>
+      </div>
+
+      <!-- Content Columns Group -->
+      <div class="flex flex-col sm:flex-row gap-8 justify-end">
+        {sortedColumns.map(col => (
+          <FooterColumn 
+            title={col.data.title} 
+            items={col.data.items} 
+          />
+        ))}
+      </div>
+    </div>
+
+  </div>
+</footer>

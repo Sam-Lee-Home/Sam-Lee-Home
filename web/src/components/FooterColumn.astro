@@ -21,10 +21,10 @@ const { title, items } = Astro.props;
       item.href ? (
         <li>
           <a 
-            href={item.href} 
+            href={item.href?.startsWith('/') && !item.href.startsWith('//') ? `${import.meta.env.BASE_URL}${item.href}` : item.href} 
             class="hover:text-white transition-colors duration-200 text-sm"
-            target={item.href.startsWith('mailto:') ? '_blank' : undefined}
-            rel={item.href.startsWith('mailto:') ? 'external' : undefined}
+            target={item.href?.startsWith('mailto:') ? '_blank' : undefined}
+            rel={item.href?.startsWith('mailto:') ? 'external' : undefined}
           >
             {item.label}
           </a>

@@ -43,7 +43,7 @@ import { authService } from '../../services/auth';
 
   <div class="mt-4 text-center text-sm text-gray-600">
     Didn't receive a code? 
-    <a href="/signup" class="ml-1 text-brand-primary hover:underline font-medium">Try signing up again</a>
+    <a href={import.meta.env.BASE_URL + "/signup"} class="ml-1 text-brand-primary hover:underline font-medium">Try signing up again</a>
   </div>
 </div>
 
@@ -65,7 +65,7 @@ import { authService } from '../../services/auth';
     try {
       const result = await authService.confirmSignUp(username, code);
       if (result.success) {
-        window.location.href = '/login';
+        window.location.href = import.meta.env.BASE_URL + '/login';
       } else {
         errorDiv.textContent = result.error || 'An unexpected error occurred';
         errorDiv.classList.remove('hidden');

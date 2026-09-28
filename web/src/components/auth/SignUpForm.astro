@@ -78,7 +78,7 @@ import { authService } from '../../services/auth';
     try {
       const result = await authService.signUp(username, email, password);
       if (result.success) {
-        window.location.href = '/confirm';
+        window.location.href = import.meta.env.BASE_URL + '/confirm';
       } else {
         errorDiv.textContent = result.error || 'An unexpected error occurred';
         errorDiv.classList.remove('hidden');
